@@ -168,7 +168,7 @@ namespace Gambler.Bot.Core.Sites
                 if (EmitResponse.IsSuccessStatusCode)
                 {
                     Quackbalance balance = JsonSerializer.Deserialize<Quackbalance>(sEmitResponse);
-                    sEmitResponse = await Client.GetStringAsync("stat/" + CurrentCurrency + (string.IsNullOrWhiteSpace(accesstoken)?"": "?api_key=" + accesstoken));
+                    sEmitResponse = await Client.GetStringAsync("bot/stats/" + CurrentCurrency + (string.IsNullOrWhiteSpace(accesstoken)?"": "?api_key=" + accesstoken));
                     QuackStatsDetails _Stats = JsonSerializer.Deserialize<QuackStatsDetails>(sEmitResponse);
                     sEmitResponse = await Client.GetStringAsync("randomize" + (string.IsNullOrWhiteSpace(accesstoken)?"": "?api_key=" + accesstoken));
                     currentseed = JsonSerializer.Deserialize<QuackSeed>(sEmitResponse).current;
@@ -199,6 +199,9 @@ namespace Gambler.Bot.Core.Sites
                 }
                 else
                 {
+                    string url = $"{URLInUse}/api/load/{CurrentCurrency}?api_key={accesstoken}";
+                    string result = await ExecJS($"let response = await fetch(\"{url}\");let data = await response.json();return data;");
+
                     string response =await EmitResponse.Content.ReadAsStringAsync();
                     callLoginFinished(false);
                     return false;
@@ -297,6 +300,16 @@ namespace Gambler.Bot.Core.Sites
                 }
                 else
                 {
+                    /*
+                     *async function fetchAsync (url) {
+  let response = await fetch(url);
+  let data = await response.json();
+  return data;
+}
+                     * 
+                     */
+                    string url = $"{URLInUse}/api/load/{CurrentCurrency}";
+                    string result = await ExecJS($"let response = await fetch(\"{url}\");let data = await response.json();return data;");
                     string response = await EmitResponse.Content.ReadAsStringAsync();
                     callLoginFinished(false);
                     return false;

@@ -839,7 +839,7 @@ namespace Gambler.Bot.Core.Sites
 
             //return args.Config;
         }
-
+        public Func<string,Task<string?>> ExecJS { get; set; }
         public IGameConfig GetGameSettings(Games currentGame)
         {
             switch (currentGame)
