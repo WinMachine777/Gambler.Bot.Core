@@ -24,7 +24,7 @@ namespace Gambler.Bot.Core.Sites
         DateTime lastupdate = new DateTime();
         HttpClient Client;// = new HttpClient { BaseAddress = new Uri("https://api.primedice.com/api/") };
         HttpClientHandler ClientHandlr;
-        public static string[] sCurrencies = new string[] { "BTC", "Doge", "ETH", "GAS", "Bch", "PLAY", "LTC", "XMR", "ETC","USDC","USDT","SOL","BNB","POL","PEPE","SHIB", };
+        public static string[] sCurrencies = new string[] { "BTC", "Doge", "ETH",  "Bch", "PLAY", "LTC",  "ETC","USDC","USDT","SOL","BNB","POL","PEPE","SHIB","XRP" };
         string CurrenyHash = "";
 
         public DiceConfig DiceSettings { get; set; }
