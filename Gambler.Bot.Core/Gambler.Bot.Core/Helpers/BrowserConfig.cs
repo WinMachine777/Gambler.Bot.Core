@@ -12,5 +12,6 @@ namespace Gambler.Bot.Core.Helpers
         public string UserAgent { get; set; }
         public CookieContainer Cookies { get; set; }
         public Dictionary<string, string> Headers { get; set; }
+        public string scriptResponse { get; set; }
     }
 }

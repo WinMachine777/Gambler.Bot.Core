@@ -824,9 +824,9 @@ namespace Gambler.Bot.Core.Sites
             ForceUpdateStats = true;
             OnInvestFinished?.Invoke(this, new GenericEventArgs { Success = Success, Message = Message });
         }
-        protected BrowserConfig CallBypassRequired(string URL, string[] RequiredCookies, bool withTimeout = true, string headersroute="api")
+        protected BrowserConfig CallBypassRequired(string URL, string[] RequiredCookies, bool withTimeout = true, string headersroute="api", string postNavScript = null, bool showDoneButton =false)
         {
-            var args = new BypassRequiredArgs { URL = URL, RequiredCookies=RequiredCookies, HasTimeout=withTimeout, HeadersPath=headersroute };
+            var args = new BypassRequiredArgs { URL = URL, RequiredCookies=RequiredCookies, HasTimeout=withTimeout, HeadersPath=headersroute , PostNavScript= postNavScript, showDoneButton=showDoneButton};
             OnBrowserBypassRequired?.Invoke(this, args);
             
             return args.Config;

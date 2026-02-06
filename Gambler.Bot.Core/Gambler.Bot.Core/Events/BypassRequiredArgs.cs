@@ -10,5 +10,7 @@ namespace Gambler.Bot.Core.Events
         public string[] RequiredCookies { get; set; }
         public bool HasTimeout { get; set; }
         public string HeadersPath { get; set; }
+        public string PostNavScript { get; set; }
+        public bool showDoneButton { get; internal set; }
     }
 }

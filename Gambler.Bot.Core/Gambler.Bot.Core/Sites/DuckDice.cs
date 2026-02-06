@@ -170,8 +170,8 @@ namespace Gambler.Bot.Core.Sites
                     Quackbalance balance = JsonSerializer.Deserialize<Quackbalance>(sEmitResponse);
                     sEmitResponse = await Client.GetStringAsync("bot/stats/" + CurrentCurrency + (string.IsNullOrWhiteSpace(accesstoken)?"": "?api_key=" + accesstoken));
                     QuackStatsDetails _Stats = JsonSerializer.Deserialize<QuackStatsDetails>(sEmitResponse);
-                    sEmitResponse = await Client.GetStringAsync("randomize" + (string.IsNullOrWhiteSpace(accesstoken)?"": "?api_key=" + accesstoken));
-                    currentseed = JsonSerializer.Deserialize<QuackSeed>(sEmitResponse).current;
+                    /*sEmitResponse = await Client.GetStringAsync("randomize" + (string.IsNullOrWhiteSpace(accesstoken)?"": "?api_key=" + accesstoken));
+                    currentseed = JsonSerializer.Deserialize<QuackSeed>(sEmitResponse).current;*/
                     if (balance != null && _Stats != null)
                     {
                         if (this.SelectedGameMode == "Normal")
@@ -398,14 +398,14 @@ namespace Gambler.Bot.Core.Sites
                 {
                     TotalAmount = decimal.Parse(newbet.bet.betAmount, System.Globalization.NumberFormatInfo.InvariantInfo),
                     Chance = newbet.bet.chance,
-                    ClientSeed = currentseed.clientSeed,
+                    //ClientSeed = currentseed.clientSeed,
                     Currency = CurrentCurrency,
                     DateValue = DateTime.Now,
                     High = High,
-                    Nonce = currentseed.nonce++,
+                    //Nonce = currentseed.nonce++,
                     Profit = decimal.Parse(newbet.bet.profit, System.Globalization.NumberFormatInfo.InvariantInfo),
                     Roll = newbet.bet.number / 100,
-                    ServerHash = currentseed.serverSeedHash,
+                    //ServerHash = currentseed.serverSeedHash,
                     BetID = newbet.bet.hash,
                     Guid = BetDetails.GUID
                 };
