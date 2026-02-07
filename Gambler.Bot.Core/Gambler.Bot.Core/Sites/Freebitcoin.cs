@@ -369,7 +369,7 @@ namespace Gambler.Bot.Core.Sites
             try
             {
 
-                var cookies = CallBypassRequired(URLInUse + AffiliateCode, ["cf_clearance","password"], false, "/cgi-bin/");
+                var cookies = await CallBypassRequired(URLInUse + AffiliateCode, ["cf_clearance","password"], false, "/cgi-bin/");
 
                 HttpClientHandler handler = new HttpClientHandler
                 {
@@ -403,7 +403,7 @@ namespace Gambler.Bot.Core.Sites
                 int retriees = 0;
                 while (!response.IsSuccessStatusCode && retriees++ < 5)
                 {
-                    CallCFCaptchaBypass(responsestring);
+                    await CallCFCaptchaBypass(responsestring);
                     await Task.Delay(Random.Next(50, 150) * retriees);
                     response = await Client.GetAsync($"{URLInUse}/cgi-bin/api.pl?op=get_user_stats");
                     responsestring = await response.Content.ReadAsStringAsync();

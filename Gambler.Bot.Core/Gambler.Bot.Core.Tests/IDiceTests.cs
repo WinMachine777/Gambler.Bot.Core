@@ -2,6 +2,7 @@
 using Gambler.Bot.Common.Games;
 using Gambler.Bot.Common.Games.Dice;
 using Gambler.Bot.Core.Events;
+using Gambler.Bot.Core.Helpers;
 using Gambler.Bot.Core.Sites;
 using Gambler.Bot.Core.Tests.Code;
 
@@ -16,7 +17,7 @@ namespace Gambler.Bot.Core.Tests
         {
            
             _site = site;
-            _site.OnBrowserBypassRequired += _site_OnBrowserBypassRequired;
+            _site.OnBrowserBypassRequired = _site_OnBrowserBypassRequired;
         }
 
         public async Task DisposeAsync()
@@ -44,7 +45,7 @@ namespace Gambler.Bot.Core.Tests
             }
         }
 
-        private void _site_OnBrowserBypassRequired(object? sender, BypassRequiredArgs e)
+        private async Task<BrowserConfig> _site_OnBrowserBypassRequired(BypassRequiredArgs e)
         {
             BaseSiteTests.bypassthingy tmpthingy = new BaseSiteTests.bypassthingy { args = e };
             Thread tttttt = new Thread(new ParameterizedThreadStart(CreateBypassThread));
@@ -58,7 +59,7 @@ namespace Gambler.Bot.Core.Tests
             e.Config = tmpthingy.form.GetBypass(e);
 
             tmpthingy.form.CloseForm();
-
+            return e.Config;
         }
 
         [STAThread]

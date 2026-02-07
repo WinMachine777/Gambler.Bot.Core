@@ -713,8 +713,8 @@ namespace Gambler.Bot.Core.Sites
         public event EventHandler<GenericEventArgs> OnDonationFinished;
         public event EventHandler<GenericEventArgs> OnInvestFinished;
         public event EventHandler<GameMessageEventArgs> OnGameMessage;
-        public event EventHandler<BypassRequiredArgs> OnBrowserBypassRequired;
-        public event EventHandler<GenericEventArgs> OnCFCaptchaBypass;
+        public Func<BypassRequiredArgs, Task<BrowserConfig>> OnBrowserBypassRequired;
+        public Func<string,Task> OnCFCaptchaBypass;
 
         protected void callStatsUpdated(SiteStats Stats)
         {
@@ -824,22 +824,18 @@ namespace Gambler.Bot.Core.Sites
             ForceUpdateStats = true;
             OnInvestFinished?.Invoke(this, new GenericEventArgs { Success = Success, Message = Message });
         }
-        protected BrowserConfig CallBypassRequired(string URL, string[] RequiredCookies, bool withTimeout = true, string headersroute="api")
+        protected async Task<BrowserConfig> CallBypassRequired(string URL, string[] RequiredCookies, bool withTimeout = true, string headersroute="api", string postNavScript = null, bool showDoneButton =false)
         {
-            var args = new BypassRequiredArgs { URL = URL, RequiredCookies=RequiredCookies, HasTimeout=withTimeout, HeadersPath=headersroute };
-            OnBrowserBypassRequired?.Invoke(this, args);
+            var args = new BypassRequiredArgs { URL = URL, RequiredCookies=RequiredCookies, HasTimeout=withTimeout, HeadersPath=headersroute , PostNavScript= postNavScript, showDoneButton=showDoneButton};
+            return await OnBrowserBypassRequired?.Invoke(args);
             
-            return args.Config;
         }
 
-        protected void CallCFCaptchaBypass(string script)
+        protected async Task CallCFCaptchaBypass(string script)
         {
-            var args = new GenericEventArgs { Message = script };
-            OnCFCaptchaBypass?.Invoke(this, args);
-
-            //return args.Config;
+            await OnCFCaptchaBypass?.Invoke(script);
         }
-
+        public Func<string,Task<string?>> ExecJS { get; set; }
         public IGameConfig GetGameSettings(Games currentGame)
         {
             switch (currentGame)

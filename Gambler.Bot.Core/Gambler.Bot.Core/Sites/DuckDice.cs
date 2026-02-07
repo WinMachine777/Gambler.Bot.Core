@@ -123,7 +123,7 @@ namespace Gambler.Bot.Core.Sites
 
                 };
 
-                var cookies = CallBypassRequired(URLInUse + AffiliateCode, ["__cf_bm"]);
+                var cookies = await CallBypassRequired(URLInUse + AffiliateCode, ["__cf_bm"]);
                 var authcookie = cookies.Cookies.GetCookies(new Uri(URLInUse)).FirstOrDefault(x => x.Name == "_at");
                 if (authcookie!=null)
                 {
@@ -159,7 +159,7 @@ namespace Gambler.Bot.Core.Sites
                 int retriees = 0;
                 while (!EmitResponse.IsSuccessStatusCode && retriees++ < 5)
                 {
-                    CallCFCaptchaBypass(sEmitResponse);
+                    await CallCFCaptchaBypass(sEmitResponse);
                     await Task.Delay(Random.Next(50, 150) * retriees);
                     EmitResponse = await Client.GetAsync("load/" + CurrentCurrency + (string.IsNullOrWhiteSpace(accesstoken)?"": "?api_key=" + accesstoken));
                     sEmitResponse = await EmitResponse.Content.ReadAsStringAsync();
@@ -168,10 +168,10 @@ namespace Gambler.Bot.Core.Sites
                 if (EmitResponse.IsSuccessStatusCode)
                 {
                     Quackbalance balance = JsonSerializer.Deserialize<Quackbalance>(sEmitResponse);
-                    sEmitResponse = await Client.GetStringAsync("stat/" + CurrentCurrency + (string.IsNullOrWhiteSpace(accesstoken)?"": "?api_key=" + accesstoken));
+                    sEmitResponse = await Client.GetStringAsync("bot/stats/" + CurrentCurrency + (string.IsNullOrWhiteSpace(accesstoken)?"": "?api_key=" + accesstoken));
                     QuackStatsDetails _Stats = JsonSerializer.Deserialize<QuackStatsDetails>(sEmitResponse);
-                    sEmitResponse = await Client.GetStringAsync("randomize" + (string.IsNullOrWhiteSpace(accesstoken)?"": "?api_key=" + accesstoken));
-                    currentseed = JsonSerializer.Deserialize<QuackSeed>(sEmitResponse).current;
+                    /*sEmitResponse = await Client.GetStringAsync("randomize" + (string.IsNullOrWhiteSpace(accesstoken)?"": "?api_key=" + accesstoken));
+                    currentseed = JsonSerializer.Deserialize<QuackSeed>(sEmitResponse).current;*/
                     if (balance != null && _Stats != null)
                     {
                         if (this.SelectedGameMode == "Normal")
@@ -199,6 +199,9 @@ namespace Gambler.Bot.Core.Sites
                 }
                 else
                 {
+                    string url = $"{URLInUse}/api/load/{CurrentCurrency}?api_key={accesstoken}";
+                    string result = await ExecJS($"let response = await fetch(\"{url}\");let data = await response.json();return data;");
+
                     string response =await EmitResponse.Content.ReadAsStringAsync();
                     callLoginFinished(false);
                     return false;
@@ -217,7 +220,7 @@ namespace Gambler.Bot.Core.Sites
         {
             try
             {
-                var cookies = CallBypassRequired(URLInUse+"/dice" + AffiliateCode, ["_at", "__cf_bm"], false, "/api/load/bets");
+                var cookies = await CallBypassRequired(URLInUse+"/dice" + AffiliateCode, ["_at", "__cf_bm"], false, "/api/load/bets");
                 //accesstoken = cookies.Cookies.GetCookies(new Uri(URLInUse)).FirstOrDefault(x=>x.Name=="_at")?.Value;
                 HttpClientHandler handler = new HttpClientHandler
                 {
@@ -257,7 +260,7 @@ namespace Gambler.Bot.Core.Sites
                 int retriees = 0;
                 while (!EmitResponse.IsSuccessStatusCode && retriees++ < 5)
                 {
-                    CallCFCaptchaBypass(sEmitResponse);
+                    await CallCFCaptchaBypass(sEmitResponse);
                     await Task.Delay(Random.Next(50, 150) * retriees);
                     EmitResponse = await Client.GetAsync("load/" + CurrentCurrency );
                     sEmitResponse = await EmitResponse.Content.ReadAsStringAsync();
@@ -297,6 +300,16 @@ namespace Gambler.Bot.Core.Sites
                 }
                 else
                 {
+                    /*
+                     *async function fetchAsync (url) {
+  let response = await fetch(url);
+  let data = await response.json();
+  return data;
+}
+                     * 
+                     */
+                    string url = $"{URLInUse}/api/load/{CurrentCurrency}";
+                    string result = await ExecJS($"let response = await fetch(\"{url}\");let data = await response.json();return data;");
                     string response = await EmitResponse.Content.ReadAsStringAsync();
                     callLoginFinished(false);
                     return false;
@@ -385,14 +398,14 @@ namespace Gambler.Bot.Core.Sites
                 {
                     TotalAmount = decimal.Parse(newbet.bet.betAmount, System.Globalization.NumberFormatInfo.InvariantInfo),
                     Chance = newbet.bet.chance,
-                    ClientSeed = currentseed.clientSeed,
+                    //ClientSeed = currentseed.clientSeed,
                     Currency = CurrentCurrency,
                     DateValue = DateTime.Now,
                     High = High,
-                    Nonce = currentseed.nonce++,
+                    //Nonce = currentseed.nonce++,
                     Profit = decimal.Parse(newbet.bet.profit, System.Globalization.NumberFormatInfo.InvariantInfo),
                     Roll = newbet.bet.number / 100,
-                    ServerHash = currentseed.serverSeedHash,
+                    //ServerHash = currentseed.serverSeedHash,
                     BetID = newbet.bet.hash,
                     Guid = BetDetails.GUID
                 };
