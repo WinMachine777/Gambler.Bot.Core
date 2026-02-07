@@ -8,6 +8,7 @@ using OtpNet;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Web;
+using Gambler.Bot.Core.Helpers;
 
 namespace Gambler.Bot.Core.Tests
 {
@@ -20,7 +21,7 @@ namespace Gambler.Bot.Core.Tests
         {
             _site = site;
             
-            _site.OnBrowserBypassRequired += _site_OnBrowserBypassRequired;
+            _site.OnBrowserBypassRequired = _site_OnBrowserBypassRequired;
         }
 
         internal static LoginParamValue[] GetParams(string Sitename, [CallerMemberName] string callerName = "")
@@ -109,7 +110,7 @@ namespace Gambler.Bot.Core.Tests
             public BrowserBypass form { get; set; }
         }
 
-        private void _site_OnBrowserBypassRequired(object? sender, BypassRequiredArgs e)
+        private async Task<BrowserConfig> _site_OnBrowserBypassRequired(BypassRequiredArgs e)
         {
             bypassthingy tmpthingy = new bypassthingy { args = e };
             Thread tttttt = new Thread(new ParameterizedThreadStart(CreateBypassThread));
@@ -123,7 +124,7 @@ namespace Gambler.Bot.Core.Tests
             e.Config = tmpthingy.form.GetBypass(e);
             
             tmpthingy.form.CloseForm();
-            
+            return e.Config;
         }
 
         [STAThread]
@@ -472,7 +473,7 @@ namespace Gambler.Bot.Core.Tests
 
         public void Dispose()
         {
-            _site.OnBrowserBypassRequired-= _site_OnBrowserBypassRequired;
+            _site.OnBrowserBypassRequired = null;
         }
     }
 }

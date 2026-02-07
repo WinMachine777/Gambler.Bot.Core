@@ -141,7 +141,7 @@ namespace Gambler.Bot.Core.Sites
                         APIKey = x.Value;
                 }
                 //CookieContainer cookies = new CookieContainer();
-                var cookies = CallBypassRequired(URLInUse+AffiliateCode, ["__cf_bm"]);
+                var cookies = await CallBypassRequired(URLInUse+AffiliateCode, ["__cf_bm"]);
 
                 HttpClientHandler handler = new HttpClientHandler
                 {
@@ -190,7 +190,7 @@ namespace Gambler.Bot.Core.Sites
                 int retriees = 0;
                 if (!resp.IsSuccessStatusCode && retry < 5)
                 {
-                    CallCFCaptchaBypass(respostring);
+                    await CallCFCaptchaBypass(respostring);
                     await Task.Delay(Random.Next(50, 150) * retry);
                     return await _Login(LoginParams, ++retry);
                 }
@@ -652,7 +652,7 @@ namespace Gambler.Bot.Core.Sites
         {
             try
             { 
-            var cookies = CallBypassRequired(URLInUse + AffiliateCode, ["session", "__cf_bm"], false, URL);
+            var cookies = await CallBypassRequired(URLInUse + AffiliateCode, ["session", "__cf_bm"], false, URL);
                 string APIKey = cookies.Cookies.GetCookies(new Uri(URLInUse)).FirstOrDefault(x => x.Name.ToLower() == "session")?.Value;
                 HttpClientHandler handler = new HttpClientHandler
                 {
@@ -699,7 +699,7 @@ x-operation-type: query*/
                 
                 if (!resp.IsSuccessStatusCode && retry++ < 5)
                 {
-                    CallCFCaptchaBypass(respostring);
+                    await CallCFCaptchaBypass(respostring);
                     await Task.Delay(Random.Next(50, 150) * retry);
                     return await _BrowserLogin(retry);
                 }

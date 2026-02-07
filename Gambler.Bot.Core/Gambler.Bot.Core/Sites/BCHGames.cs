@@ -108,7 +108,7 @@ namespace Gambler.Bot.Core.Sites
         {
             try
             {
-                var cookies = CallBypassRequired(URLInUse + AffiliateCode, ["cf_clearance="], false,"/sounds/bet3.mp3", "localStorage.getItem('auth_token_v1')");
+                var cookies = await CallBypassRequired(URLInUse + AffiliateCode, ["cf_clearance="], false,"/sounds/bet3.mp3", "localStorage.getItem('auth_token_v1')");
                 string authtoken = cookies.scriptResponse.Replace("\"", "").Replace("\\","");
                 string cfuid = "";
                 if (string.IsNullOrEmpty(authtoken))

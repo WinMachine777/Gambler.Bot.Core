@@ -123,7 +123,7 @@ namespace Gambler.Bot.Core.Sites
 
                 };
 
-                var cookies = CallBypassRequired(URLInUse + AffiliateCode, ["__cf_bm"]);
+                var cookies = await CallBypassRequired(URLInUse + AffiliateCode, ["__cf_bm"]);
                 var authcookie = cookies.Cookies.GetCookies(new Uri(URLInUse)).FirstOrDefault(x => x.Name == "_at");
                 if (authcookie!=null)
                 {
@@ -159,7 +159,7 @@ namespace Gambler.Bot.Core.Sites
                 int retriees = 0;
                 while (!EmitResponse.IsSuccessStatusCode && retriees++ < 5)
                 {
-                    CallCFCaptchaBypass(sEmitResponse);
+                    await CallCFCaptchaBypass(sEmitResponse);
                     await Task.Delay(Random.Next(50, 150) * retriees);
                     EmitResponse = await Client.GetAsync("load/" + CurrentCurrency + (string.IsNullOrWhiteSpace(accesstoken)?"": "?api_key=" + accesstoken));
                     sEmitResponse = await EmitResponse.Content.ReadAsStringAsync();
@@ -220,7 +220,7 @@ namespace Gambler.Bot.Core.Sites
         {
             try
             {
-                var cookies = CallBypassRequired(URLInUse+"/dice" + AffiliateCode, ["_at", "__cf_bm"], false, "/api/load/bets");
+                var cookies = await CallBypassRequired(URLInUse+"/dice" + AffiliateCode, ["_at", "__cf_bm"], false, "/api/load/bets");
                 //accesstoken = cookies.Cookies.GetCookies(new Uri(URLInUse)).FirstOrDefault(x=>x.Name=="_at")?.Value;
                 HttpClientHandler handler = new HttpClientHandler
                 {
@@ -260,7 +260,7 @@ namespace Gambler.Bot.Core.Sites
                 int retriees = 0;
                 while (!EmitResponse.IsSuccessStatusCode && retriees++ < 5)
                 {
-                    CallCFCaptchaBypass(sEmitResponse);
+                    await CallCFCaptchaBypass(sEmitResponse);
                     await Task.Delay(Random.Next(50, 150) * retriees);
                     EmitResponse = await Client.GetAsync("load/" + CurrentCurrency );
                     sEmitResponse = await EmitResponse.Content.ReadAsStringAsync();
